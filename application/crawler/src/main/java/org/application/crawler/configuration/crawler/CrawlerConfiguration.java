@@ -59,6 +59,7 @@ public class CrawlerConfiguration {
         // configuration.set("", "");
         configuration.set("plugin.auto-activation", "true");
         configuration.set("plugin.includes", "protocol-http|urlfilter-regex|parse-(html|tika)|index-(basic|anchor)|indexer-solr|scoring-opic|urlnormalizer-(pass|regex|basic)");
+        configuration.set("urlfilter.regex.file", "regex-urlfilter.txt");
 
 
         return configuration;
