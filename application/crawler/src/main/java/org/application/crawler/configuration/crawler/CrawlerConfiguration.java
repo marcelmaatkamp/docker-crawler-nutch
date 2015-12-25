@@ -55,24 +55,30 @@ public class CrawlerConfiguration {
     @Bean
     org.apache.hadoop.conf.Configuration configuration() {
         org.apache.hadoop.conf.Configuration configuration = new org.apache.hadoop.conf.Configuration();
+        configuration.set("plugin.folders", "/Users/marcel/projects/docker-crawler-nutch/application/crawler/src/main/resources/crawler/plugins");
+        // configuration.set("", "");
+        configuration.set("plugin.auto-activation", "true");
+        configuration.set("plugin.includes", "protocol-http|urlfilter-regex|parse-(html|tika)|index-(basic|anchor)|indexer-solr|scoring-opic|urlnormalizer-(pass|regex|basic)");
+
+
         return configuration;
     }
 
     @Bean
     Path crawlDB() {
-        Path path = new Path("crawler/db");
+        Path path = new Path("~/crawler/db");
         return path;
     }
 
     @Bean
     Path urlDir() {
-        Path path = new Path("crawler/urls");
+        Path path = new Path("application/crawler/src/main/resources/crawler/urls");
         return path;
     }
 
     @Bean
     Injector injector() throws IOException {
-        Injector injector = new Injector();
+        Injector injector = new Injector(configuration());
         injector.inject(crawlDB(), urlDir());
         return injector;
     }
