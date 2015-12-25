@@ -1,13 +1,16 @@
 package org.application.crawler.configuration.crawler;
 
 import org.apache.hadoop.fs.Path;
+import org.apache.nutch.crawl.Generator;
 import org.apache.nutch.crawl.Injector;
+import org.apache.nutch.fetcher.Fetcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * Created by marcel on 25-12-15.
@@ -60,14 +63,21 @@ public class CrawlerConfiguration {
         configuration.set("plugin.auto-activation", "true");
         configuration.set("plugin.includes", "protocol-http|urlfilter-regex|parse-(html|tika)|index-(basic|anchor)|indexer-solr|scoring-opic|urlnormalizer-(pass|regex|basic)");
         configuration.set("urlfilter.regex.file", "regex-urlfilter.txt");
-
+        configuration.set("http.agent.name", "Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko");
+        configuration.set("parse.plugin.file", "parse-plugins.xml");
 
         return configuration;
     }
 
     @Bean
     Path crawlDB() {
-        Path path = new Path("~/crawler/db");
+        Path path = new Path("crawler/crawldb");
+        return path;
+    }
+
+    @Bean
+    Path segmentsDir() {
+        Path path = new Path("crawler/segments");
         return path;
     }
 
@@ -80,7 +90,19 @@ public class CrawlerConfiguration {
     @Bean
     Injector injector() throws IOException {
         Injector injector = new Injector(configuration());
-        injector.inject(crawlDB(), urlDir());
         return injector;
+    }
+
+    @Bean
+    Generator generator() throws IOException {
+        Generator generator = new Generator(configuration());
+        return generator;
+    }
+
+
+    @Bean
+    Fetcher fetcher() throws IOException {
+        Fetcher fetcher = new Fetcher(configuration());
+        return fetcher;
     }
 }

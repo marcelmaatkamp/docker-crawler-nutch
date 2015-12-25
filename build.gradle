@@ -85,6 +85,7 @@ project(":application:crawler") {
         compile "org.apache.tika:tika-serialization:$tikaVersion"
         compile "org.apache.tika:tika-translate:$tikaVersion"
         compile "org.apache.tika:tika:$tikaVersion"
+        compile 'nekohtml:nekohtml:1.9.6.2'
     }
     bootRun {
         // mainClass = "org.application.crawler.CrawlerStarter"
