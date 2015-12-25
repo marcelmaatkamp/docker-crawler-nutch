@@ -90,6 +90,6 @@ project(":application:crawler") {
     bootRun {
         // mainClass = "org.application.crawler.CrawlerStarter"
         main = "org.application.rabbitmq.datadiode.DatadiodeBlackStarter"
-        jvmArgs = ["-d64", "-Xmx8g", "-XX:+PrintGCTimeStamps", "-verbose:gc"]
+        jvmArgs = ["-d64", "-Xmx8g", "-XX:+PrintGCTimeStamps", "-verbose:gc", "-DsocksProxyHost=tor","-DsocksProxyPort=9050"]
     }
 }

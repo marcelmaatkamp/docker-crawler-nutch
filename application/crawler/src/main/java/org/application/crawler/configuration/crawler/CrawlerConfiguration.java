@@ -1,9 +1,13 @@
 package org.application.crawler.configuration.crawler;
 
 import org.apache.hadoop.fs.Path;
+import org.apache.nutch.crawl.CrawlDb;
 import org.apache.nutch.crawl.Generator;
 import org.apache.nutch.crawl.Injector;
 import org.apache.nutch.fetcher.Fetcher;
+import org.apache.nutch.parse.Parse;
+import org.apache.nutch.parse.ParseSegment;
+import org.apache.nutch.protocol.Protocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -64,7 +68,10 @@ public class CrawlerConfiguration {
         configuration.set("plugin.includes", "protocol-http|urlfilter-regex|parse-(html|tika)|index-(basic|anchor)|indexer-solr|scoring-opic|urlnormalizer-(pass|regex|basic)");
         configuration.set("urlfilter.regex.file", "regex-urlfilter.txt");
         configuration.set("http.agent.name", "Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko");
-        configuration.set("parse.plugin.file", "parse-plugins.xml");
+        configuration.set("parse.plugin.file", "parse-plugins.xml"); // fetcher.max.crawl.delay
+        configuration.set("fetcher.max.crawl.delay", "15000"); //
+        configuration.setBoolean(Protocol.CHECK_ROBOTS, false);
+        configuration.setBoolean(Protocol.CHECK_BLOCKING, false);
 
         return configuration;
     }
@@ -104,5 +111,17 @@ public class CrawlerConfiguration {
     Fetcher fetcher() throws IOException {
         Fetcher fetcher = new Fetcher(configuration());
         return fetcher;
+    }
+
+    @Bean
+    ParseSegment parseSegment() {
+        ParseSegment parse = new ParseSegment(configuration());
+        return parse;
+    }
+
+    @Bean
+    CrawlDb crawlDb() {
+        CrawlDb crawlDb = new CrawlDb(configuration());
+        return crawlDb;
     }
 }
