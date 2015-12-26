@@ -28,7 +28,6 @@ public class CrawlerStarter {
 
         Path crawlDB = (Path) configurableApplicationContext.getBean("crawlDB");
         Path segmentsDir = (Path) configurableApplicationContext.getBean("segmentsDir");
-        Path urlDir = (Path) configurableApplicationContext.getBean("urlDir");
 
         Injector injector = configurableApplicationContext.getBean(Injector.class);
         Generator generator = configurableApplicationContext.getBean(Generator.class);
@@ -38,7 +37,6 @@ public class CrawlerStarter {
 
         // fetch
         long segmentTime = new Date().getTime();
-        injector.inject(crawlDB, urlDir);
 
         boolean stop = false;
 
@@ -54,6 +52,9 @@ public class CrawlerStarter {
                     parseSegment.parse(path);
                 }
                 crawlDb.update(crawlDB, paths, true, true);
+
+                // https://www.mind-it.info/2013/09/26/integrating-nutch-1-7-elasticsearch/
+
             } else {
                 stop = true;
             }

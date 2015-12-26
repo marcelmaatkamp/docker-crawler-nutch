@@ -65,14 +65,25 @@ public class CrawlerConfiguration {
         configuration.set("plugin.folders", "/Users/marcel/projects/docker-crawler-nutch/application/crawler/src/main/resources/crawler/plugins");
         // configuration.set("", "");
         configuration.set("plugin.auto-activation", "true");
-        configuration.set("plugin.includes", "protocol-http|urlfilter-regex|parse-(html|tika)|index-(basic|anchor)|indexer-solr|scoring-opic|urlnormalizer-(pass|regex|basic)");
+
+        configuration.set("plugin.includes", "protocol-http|urlfilter-regex|parse-(html|tika)|index-(basic|anchor)|indexer-elastic|scoring-opic|urlnormalizer-(pass|regex|basic)");
         configuration.set("urlfilter.regex.file", "regex-urlfilter.txt");
         configuration.set("http.agent.name", "Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko");
-        configuration.set("parse.plugin.file", "parse-plugins.xml"); // fetcher.max.crawl.delay
-        configuration.set("fetcher.max.crawl.delay", "15000"); //
+        configuration.set("parse.plugin.file", "parse-plugins.xml");
+        configuration.set("fetcher.max.crawl.delay", "15000");
+        configuration.set("http.timeout", String.valueOf(25000));
+        configuration.set("http.content.limit", String.valueOf(1024*1024*512));
         configuration.setBoolean(Protocol.CHECK_ROBOTS, false);
         configuration.setBoolean(Protocol.CHECK_BLOCKING, false);
 
+        // https://www.mind-it.info/2013/09/26/integrating-nutch-1-7-elasticsearch/
+        configuration.set("elastic.host", "elasticsearch");
+        configuration.set("elastic.port", String.valueOf(9300));
+        configuration.set("elastic.cluster", "elasticserach");
+        configuration.set("elastic.index", "nutch");
+        configuration.set("elastic.max.bulk.docs", String.valueOf(250));
+        configuration.set("elastic.max.bulk.size", String.valueOf(2500500));
+        
         return configuration;
     }
 
@@ -124,4 +135,6 @@ public class CrawlerConfiguration {
         CrawlDb crawlDb = new CrawlDb(configuration());
         return crawlDb;
     }
+
+
 }
