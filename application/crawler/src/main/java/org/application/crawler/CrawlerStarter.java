@@ -48,9 +48,9 @@ public class CrawlerStarter {
 
         boolean stop = false;
 
-        int numberOfReduceTasks = 4;
-        int numberOfPagesInrun = 1;
-        int numberOfCores = 2;
+        int numberOfReduceTasks = 8;
+        int numberOfPagesInrun = 100;
+        int numberOfCores = 32;
 
 
         while(!stop) {

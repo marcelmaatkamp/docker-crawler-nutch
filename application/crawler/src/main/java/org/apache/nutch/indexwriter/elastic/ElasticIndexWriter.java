@@ -21,6 +21,7 @@ import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -82,10 +83,13 @@ public class ElasticIndexWriter implements IndexWriter {
         // Prefer TransportClient
         if (clusterName != null) {
 
-            node = nodeBuilder().clusterName("elasticsearch:9300").client(true).node();
-            client = node.client();
+           // node = nodeBuilder().clusterName("elasticsearch:9300").client(true).node();
+            // client = node.client();
 
-            /**
+            client = TransportClient.builder().build()
+                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("elasticsearch"), 9300));
+
+/*
              Settings settings = Settings.settingsBuilder()
              .put("client.transport.sniff", true)//这个客户端可以嗅到集群的其它部分，并将它们加入到机器列表。为了开启该功能，设置client.transport.sniff为true。
              .put("cluster.name", "elasticsearch")
@@ -94,7 +98,7 @@ public class ElasticIndexWriter implements IndexWriter {
              .settings(settings)
              .build()
              .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("elasticsearch"), 9300));
-             */
+*/
         }
 
         bulk = client.prepareBulk();
