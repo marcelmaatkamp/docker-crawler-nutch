@@ -86,6 +86,13 @@ project(":application:crawler") {
         compile "org.apache.tika:tika-translate:$tikaVersion"
         compile "org.apache.tika:tika:$tikaVersion"
         compile 'nekohtml:nekohtml:1.9.6.2'
+
+        compile 'org.elasticsearch:elasticsearch:2.1.1'
+        compile 'com.fasterxml.jackson.core:jackson-core:2.6.4'
+
+    }
+    configurations {
+        all*.exclude group: "org.slf4j", module: "slf4j-log4j12"
     }
     bootRun {
         // mainClass = "org.application.crawler.CrawlerStarter"

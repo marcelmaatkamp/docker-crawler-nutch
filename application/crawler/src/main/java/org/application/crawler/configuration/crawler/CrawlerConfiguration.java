@@ -4,9 +4,13 @@ import org.apache.hadoop.fs.Path;
 import org.apache.nutch.crawl.CrawlDb;
 import org.apache.nutch.crawl.Generator;
 import org.apache.nutch.crawl.Injector;
+import org.apache.nutch.crawl.LinkDb;
 import org.apache.nutch.fetcher.Fetcher;
+import org.apache.nutch.indexer.IndexWriters;
+import org.apache.nutch.indexer.IndexingJob;
 import org.apache.nutch.parse.Parse;
 import org.apache.nutch.parse.ParseSegment;
+import org.apache.nutch.plugin.PluginRepository;
 import org.apache.nutch.protocol.Protocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,27 +67,29 @@ public class CrawlerConfiguration {
     org.apache.hadoop.conf.Configuration configuration() {
         org.apache.hadoop.conf.Configuration configuration = new org.apache.hadoop.conf.Configuration();
         configuration.set("plugin.folders", "/Users/marcel/projects/docker-crawler-nutch/application/crawler/src/main/resources/crawler/plugins");
-        // configuration.set("", "");
         configuration.set("plugin.auto-activation", "true");
-
-        configuration.set("plugin.includes", "protocol-http|urlfilter-regex|parse-(html|tika)|index-(basic|anchor)|indexer-elastic|scoring-opic|urlnormalizer-(pass|regex|basic)");
+        configuration.set("plugin.includes", "protocol-httpclient|urlfilter-regex|parse-(text|tika|js)|index-(basic|anchor)|query-(basic|site|url)|response-(json|xml)|summary-basic|scoring-opic|urlnormalizer-(pass|regex|basic)|indexer-elastic"); //
+                                          // "protocol-http|urlfilter-regex|parse-(html|tika)|index-(basic|anchor)|indexer-elastic|scoring-opic|urlnormalizer-(pass|regex|basic)");
         configuration.set("urlfilter.regex.file", "regex-urlfilter.txt");
         configuration.set("http.agent.name", "Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko");
         configuration.set("parse.plugin.file", "parse-plugins.xml");
         configuration.set("fetcher.max.crawl.delay", "15000");
         configuration.set("http.timeout", String.valueOf(25000));
         configuration.set("http.content.limit", String.valueOf(1024*1024*512));
+
+        configuration.set("storage.data.store.class", "org.apache.gora.mongodb.store.MongoStore");
+
         configuration.setBoolean(Protocol.CHECK_ROBOTS, false);
         configuration.setBoolean(Protocol.CHECK_BLOCKING, false);
 
         // https://www.mind-it.info/2013/09/26/integrating-nutch-1-7-elasticsearch/
         configuration.set("elastic.host", "elasticsearch");
         configuration.set("elastic.port", String.valueOf(9300));
-        configuration.set("elastic.cluster", "elasticserach");
+        configuration.set("elastic.cluster", "elasticsearch");
         configuration.set("elastic.index", "nutch");
         configuration.set("elastic.max.bulk.docs", String.valueOf(250));
         configuration.set("elastic.max.bulk.size", String.valueOf(2500500));
-        
+
         return configuration;
     }
 
@@ -96,6 +102,12 @@ public class CrawlerConfiguration {
     @Bean
     Path segmentsDir() {
         Path path = new Path("crawler/segments");
+        return path;
+    }
+
+    @Bean
+    Path linkDB() {
+        Path path = new Path("crawler/links");
         return path;
     }
 
@@ -136,5 +148,30 @@ public class CrawlerConfiguration {
         return crawlDb;
     }
 
+    @Bean
+    LinkDb linkDb() {
+        LinkDb linkDb = new LinkDb(configuration());
+        return linkDb;
+    }
+
+    @Bean
+    IndexWriters indexWriters() {
+        IndexWriters indexWriters = new IndexWriters(configuration());
+        return indexWriters;
+    }
+
+    @Bean
+    IndexingJob indexingJob() {
+        IndexingJob indexingJob = new IndexingJob(configuration());
+        return indexingJob;
+    }
+
+    @Bean
+    PluginRepository pluginRepository() {
+        PluginRepository pluginRepository = new PluginRepository(configuration());
+
+        return pluginRepository;
+
+    }
 
 }
